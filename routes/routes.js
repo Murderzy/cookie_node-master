@@ -7,6 +7,8 @@ import { add_user } from"../controllers/user.controller.js";
 import { add_news } from"../controllers/news.controller.js";
 import bcrypt from"bcryptjs";
 import Users from "../models/user.js";
+import log4js from "log4js";
+import fs from "fs";
 import express_validator from 'express-validator';
 const __dirname = path.resolve();
 const router = Router();
@@ -24,7 +26,10 @@ router.use(
   })
 );
 
+
 let username = "";
+let logger = log4js.getLogger();
+
 
 router
   .route("/")
@@ -34,22 +39,31 @@ router
     // if (req.cookies && req.cookies.username) {
     //   username = req.cookies.username;
     // }
+    logger = "Get Request to Index";
+    fs.appendFile("../log.txt","Get Request to Index" + req.ip.toString(), function(error){
+      if(error) throw error;}) // если возникла ошибка
     res.render("index.ejs",{
         title:"Index",
         username:username
     });
   })
   .post((req, res) => {
+    fs.appendFile("../log.txt","POST Request to Index" + req.ip.toString(), function(error){
+      if(error) throw error;}) // если возникла ошибка
     res.send("<h1>Express POST REQUEST</h1>");
   });
 
 router.route("/forms").get((req,res)=>{
+  fs.appendFile("../log.txt","Get Request to Forms" + req.ip.toString(), function(error){
+    if(error) throw error;}) // если возникла ошибка
   res.render("forms.ejs",{
     title:"Form",
     username:username
 });
 })
 .post((req,res)=>{
+  fs.appendFile("../log.txt","post Request to Forms" + req.ip.toString(), function(error){
+    if(error) throw error;})
   if(username != "")
   {
     let user = Users.forEach(user => {
@@ -77,6 +91,8 @@ router.route("/forms").get((req,res)=>{
 router
   .route("/news")
   .get((req, res) => {
+    fs.appendFile("../log.txt","Get Request to News" + req.ip.toString(), function(error){
+      if(error) throw error;})
     res.render("news.ejs",{
         title:"News",
         news:news,
@@ -84,7 +100,8 @@ router
     });
   })
   .post(add_news,(req, res) => {
-    
+    fs.appendFile("../log.txt","POSt Request to News" + req.ip.toString(), function(error){
+      if(error) throw error;})
     res.redirect("/");
   });
 
@@ -116,6 +133,8 @@ router
 router
   .route("/register")
   .get((req, res) => {
+    fs.appendFile("../log.txt","Get Request to Reg" + req.ip.toString(), function(error){
+      if(error) throw error;})
     if(!req.session.username == "")
     {
         console.log(req.session.username);
@@ -128,12 +147,16 @@ router
     });
   })
   .post(add_user, (req, res) => {
+    fs.appendFile("../log.txt","POST Request to Reg" + req.ip.toString(), function(error){
+      if(error) throw error;})
     res.render("index",{title:"Index", username:username});
   });
 
 router
   .route("/login")
   .get((req, res) => {
+    fs.appendFile("../log.txt","Get Request to Login" + req.ip.toString(), function(error){
+      if(error) throw error;})
     if(!req.session.username == "")
     {
         username = req.session.username;
@@ -159,6 +182,8 @@ router
   });
 
 router.route("/logout").get((req, res) => {
+  fs.appendFile("../log.txt","Get Request to Logout" + req.ip.toString(), function(error){
+    if(error) throw error;})
     req.session.username = "";
     //req.session = null;
   res.redirect("/");
