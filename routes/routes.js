@@ -1,11 +1,12 @@
 import Router from"express";
 import path from"path";
 import news from"../models/news.js";
+import users from "../models/user.js"
 import methodOverride from"method-override";
 import { add_user } from"../controllers/user.controller.js";
 import { add_news } from"../controllers/news.controller.js";
 import bcrypt from"bcryptjs";
-import users from "../models/user.js";
+import Users from "../models/user.js";
 import express_validator from 'express-validator';
 const __dirname = path.resolve();
 const router = Router();
@@ -42,7 +43,36 @@ router
     res.send("<h1>Express POST REQUEST</h1>");
   });
 
+router.route("/forms").get((req,res)=>{
+  res.render("forms.ejs",{
+    title:"Form",
+    username:username
+});
+})
+.post((req,res)=>{
+  if(username != "")
+  {
+    let user = Users.forEach(user => {
+      if(user.username == username)
+      {
+        return user;
+      }
+    })
 
+    console.log(user.id);
+    const { email, text } = req.body;
+    console.log(email);
+    console.log(text);
+    res.redirect('/');
+  }
+  else
+  {
+    const { email, text } = req.body;
+    console.log(email);
+    console.log(text);
+    res.redirect('/');
+  }
+})
 
 router
   .route("/news")
