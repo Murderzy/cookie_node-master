@@ -1,6 +1,6 @@
 import news from "../models/news.js";
 import  bcrypt from"bcryptjs";
-import express_validator from 'express-validator';
+import {body} from 'express-validator';
 
 export const add_news = async (req, res, next) => {
     if (req.body) {
